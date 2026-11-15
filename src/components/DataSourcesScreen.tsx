@@ -60,7 +60,7 @@ export const DataSourcesScreen: React.FC = () => {
           Data Sources & Scientific References
         </h1>
         <p className="text-sm text-[#b9cacb] mt-2 max-w-3xl">
-          Every dataset, radar catalog, and scientific interpretation integrated into Earth Through Time is attributed below to its originating space agency or archive center. Authentication gates and pre-operational data limitations are reported explicitly.
+          Every dataset, radar catalog, and scientific interpretation integrated into Global Time is attributed below to its originating space agency or archive center. Authentication gates and pre-operational data limitations are reported explicitly.
         </p>
       </div>
 
@@ -98,7 +98,7 @@ export const DataSourcesScreen: React.FC = () => {
               <div className="bg-[#050b14]/75 border border-[#38bdf8]/15 rounded p-3 text-xs flex flex-col gap-1.5">
                 <div>
                   <span className="font-mono-tabular text-[10px] uppercase text-[#849495]">
-                    Integration in Earth Through Time:{' '}
+                    Integration in Global Time:{' '}
                   </span>
                   <span className="text-[#b9cacb]">{src.integrationUsage}</span>
                 </div>

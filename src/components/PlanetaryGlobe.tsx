@@ -7,6 +7,13 @@ import {
   SarObservationSite,
   SarPhenomenon,
 } from '../data/sarData';
+import {
+  CONTINENTS,
+  MODERN_OCEAN_DEEP,
+  MODERN_OCEAN_SHALLOW,
+  getContinentAtlas,
+  sampleContinentAtLatLon,
+} from '../data/continentAtlas';
 import { RotateCcw, Compass, Layers, Play, Pause, Maximize2, Radar, Loader2 } from 'lucide-react';
 
 export interface GlobeLayerState {
@@ -15,6 +22,7 @@ export interface GlobeLayerState {
   tectonics: boolean;
   thermal: boolean;
   beacons: boolean;
+  modernContinents?: boolean;
 }
 
 interface PlanetaryGlobeProps {
@@ -40,6 +48,7 @@ interface PlanetaryGlobeProps {
   onScanRegion?: (lat: number, lon: number) => void;
   isScanningRegion?: boolean;
   focusTarget?: { lat: number; lon: number; nonce: number } | null;
+  isModernEra?: boolean;
 }
 
 // Fast deterministic 3D value noise for planetary crust/clouds
@@ -133,6 +142,7 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
   onScanRegion,
   isScanningRegion = false,
   focusTarget = null,
+  isModernEra = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -203,8 +213,11 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
     const size = Math.max(220, Math.floor(Math.min(rect.width || 540, rect.height || 540)));
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+    const showModernContinents = Boolean(isModernEra && layers.modernContinents && !compact);
+    const continentAtlas = showModernContinents ? getContinentAtlas() : null;
+
     // Offscreen buffer for smooth procedural planetary sphere
-    const renderRes = compact ? 180 : 250;
+    const renderRes = compact ? 180 : showModernContinents && continentAtlas ? 320 : 250;
     if (canvas.width !== size * dpr || canvas.height !== size * dpr) {
       canvas.width = size * dpr;
       canvas.height = size * dpr;
@@ -319,54 +332,78 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
           const wy = y1;
           const wz = -x1 * sinLon + z1 * cosLon;
 
-          // Continent mask: blend between Pangaea cluster (spread < 0) and dispersed cratons
-          const scale = spread < 0 ? 1.55 : 2.15;
-          let elevation = fbm3(wx * scale + 3.1, wy * scale + 1.7, wz * scale + 5.2, 4);
-
-          if (spread < 0) {
-            // Pull continents into a supercontinent hemisphere around wx > -0.1
-            const pangaeaBias = (wx * 0.45 + wz * 0.25) * Math.abs(spread) * 0.42;
-            elevation += pangaeaBias;
-          } else if (spread < 0.35) {
-            // Early Archean / Hadean smaller proto-crust
-            elevation -= (0.35 - spread) * 0.32;
-          }
-
-          const seaThreshold = 0.51;
+          const absLat = Math.abs(wy);
           let rgb: [number, number, number];
+          let isModernOcean = false;
 
-          if (elevation > seaThreshold) {
-            const landH = Math.min(1, (elevation - seaThreshold) / 0.28);
-            rgb = mixRgb(landRgb, highlandRgb, landH);
+          if (showModernContinents && continentAtlas) {
+            const latDeg = -(Math.asin(Math.max(-1, Math.min(1, wy))) * 180) / Math.PI;
+            const lonDeg = (Math.atan2(wx, wz) * 180) / Math.PI;
+            const cId = sampleContinentAtLatLon(continentAtlas, latDeg, lonDeg);
 
-            // Magma fissures on Hadean crust
-            if (magma > 0.05) {
-              const crack = fbm3(wx * 7.5 + 11, wy * 7.5, wz * 7.5, 2);
-              if (crack > 0.62 - magma * 0.14) {
-                const intensity = Math.min(1, ((crack - 0.52) * 4) * magma);
-                rgb = mixRgb(rgb, [255, 118, 28], intensity);
+            if (cId !== 0) {
+              const meta = CONTINENTS[cId];
+              const relief = fbm3(wx * 5.2 + 2.1, wy * 5.2 + 1.3, wz * 5.2 + 4.0, 3);
+              const tRelief = Math.max(0, Math.min(1, (relief - 0.34) * 1.9));
+              rgb = mixRgb(meta.rgb, meta.highlandRgb, tRelief);
+              // Subtle high-latitude frost sheen without hiding continent identity
+              if (absLat > 0.92 && cId !== 7) {
+                rgb = mixRgb(rgb, [235, 244, 255], (absLat - 0.92) * 3.5);
               }
+            } else {
+              isModernOcean = true;
+              const bath = fbm3(wx * 2.8 + 1.4, wy * 2.8, wz * 2.8 + 2.7, 3);
+              const depth = Math.max(0, Math.min(1, (0.64 - bath) * 2.1));
+              rgb = mixRgb(MODERN_OCEAN_SHALLOW, MODERN_OCEAN_DEEP, depth);
             }
           } else {
-            const depth = Math.min(1, (seaThreshold - elevation) / 0.25);
-            rgb = mixRgb(oceanRgb, deepOceanRgb, depth);
+            // Continent mask: blend between Pangaea cluster (spread < 0) and dispersed cratons
+            const scale = spread < 0 ? 1.55 : 2.15;
+            let elevation = fbm3(wx * scale + 3.1, wy * scale + 1.7, wz * scale + 5.2, 4);
 
-            // Hadean lava ocean glow
-            if (magma > 0.25) {
-              const lavaSwirl = fbm3(wx * 5.2, wy * 5.2 + 4, wz * 5.2, 3);
-              if (lavaSwirl > 0.55) {
-                rgb = mixRgb(rgb, [245, 130, 32], (lavaSwirl - 0.5) * 1.5 * magma);
+            if (spread < 0) {
+              // Pull continents into a supercontinent hemisphere around wx > -0.1
+              const pangaeaBias = (wx * 0.45 + wz * 0.25) * Math.abs(spread) * 0.42;
+              elevation += pangaeaBias;
+            } else if (spread < 0.35) {
+              // Early Archean / Hadean smaller proto-crust
+              elevation -= (0.35 - spread) * 0.32;
+            }
+
+            const seaThreshold = 0.51;
+
+            if (elevation > seaThreshold) {
+              const landH = Math.min(1, (elevation - seaThreshold) / 0.28);
+              rgb = mixRgb(landRgb, highlandRgb, landH);
+
+              // Magma fissures on Hadean crust
+              if (magma > 0.05) {
+                const crack = fbm3(wx * 7.5 + 11, wy * 7.5, wz * 7.5, 2);
+                if (crack > 0.62 - magma * 0.14) {
+                  const intensity = Math.min(1, ((crack - 0.52) * 4) * magma);
+                  rgb = mixRgb(rgb, [255, 118, 28], intensity);
+                }
+              }
+            } else {
+              const depth = Math.min(1, (seaThreshold - elevation) / 0.25);
+              rgb = mixRgb(oceanRgb, deepOceanRgb, depth);
+
+              // Hadean lava ocean glow
+              if (magma > 0.25) {
+                const lavaSwirl = fbm3(wx * 5.2, wy * 5.2 + 4, wz * 5.2, 3);
+                if (lavaSwirl > 0.55) {
+                  rgb = mixRgb(rgb, [245, 130, 32], (lavaSwirl - 0.5) * 1.5 * magma);
+                }
               }
             }
-          }
 
-          // Polar & Snowball glaciation
-          const absLat = Math.abs(wy);
-          const iceThreshold = 1.0 - iceCov * 1.04;
-          const iceNoise = (fbm3(wx * 6, wy * 6, wz * 6, 2) - 0.5) * 0.12;
-          if (absLat + iceNoise > iceThreshold && iceCov > 0.01) {
-            const iceBlend = Math.min(1, (absLat + iceNoise - iceThreshold) * 6.5);
-            rgb = mixRgb(rgb, iceRgb, iceBlend);
+            // Polar & Snowball glaciation
+            const iceThreshold = 1.0 - iceCov * 1.04;
+            const iceNoise = (fbm3(wx * 6, wy * 6, wz * 6, 2) - 0.5) * 0.12;
+            if (absLat + iceNoise > iceThreshold && iceCov > 0.01) {
+              const iceBlend = Math.min(1, (absLat + iceNoise - iceThreshold) * 6.5);
+              rgb = mixRgb(rgb, iceRgb, iceBlend);
+            }
           }
 
           // Thermal gradient overlay if toggled
@@ -381,13 +418,27 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
             rgb = mixRgb(rgb, thermalColor, 0.38 * equatorHeat);
           }
 
-          // Cloud layer
+          // Cloud layer (subtle in Modern Continents mode so coastlines stay crisp)
           if (cloudCov > 0.05) {
             const cVal = fbm3(wx * 3.4 + 9.2, wy * 4.8 - 2.1, wz * 3.4, 3);
             const cThresh = 0.66 - cloudCov * 0.24;
             if (cVal > cThresh) {
-              const alpha = Math.min(0.75, (cVal - cThresh) * 2.8 * cloudCov);
+              const maxAlpha = showModernContinents ? 0.34 : 0.75;
+              const alpha = Math.min(maxAlpha, (cVal - cThresh) * 2.8 * cloudCov);
               rgb = mixRgb(rgb, [235, 244, 255], alpha);
+            }
+          }
+
+          // Subtle ocean specular sheen when Modern Continents is active
+          if (isModernOcean) {
+            const hx = lx;
+            const hy = ly;
+            const hz = lz + 1;
+            const hLen = Math.hypot(hx, hy, hz) || 1;
+            const ndoth = Math.max(0, (nx * hx + ny * hy + nz * hz) / hLen);
+            const spec = Math.pow(ndoth, 28) * 0.28;
+            if (spec > 0.01) {
+              rgb = mixRgb(rgb, [140, 210, 255], spec);
             }
           }
 
@@ -679,6 +730,7 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
     selectedGranule,
     activeSarPhenomena,
     showLiveSwaths,
+    isModernEra,
   ]);
 
   // Compute current globe center (LAT, LON) for zoom-aware regional queries
@@ -1025,6 +1077,53 @@ export const PlanetaryGlobe: React.FC<PlanetaryGlobeProps> = ({
                 {label}
               </button>
             ))}
+
+            <span aria-hidden="true" className="h-4 w-px bg-[#38bdf8]/25 mx-0.5 shrink-0" />
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={Boolean(isModernEra && layers.modernContinents)}
+              disabled={!isModernEra}
+              onClick={() => onToggleLayer('modernContinents')}
+              title={
+                isModernEra
+                  ? 'Toggle distinct modern geographic continent colors on the 3D globe'
+                  : 'Available in modern era (Satellite Mode or Holocene 0.000 Ga)'
+              }
+              className={`flex items-center gap-2 px-2.5 py-1 rounded text-[11px] font-mono-tabular uppercase tracking-wider transition-all whitespace-nowrap shrink-0 min-h-[32px] border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00f0ff] ${
+                !isModernEra
+                  ? 'opacity-40 cursor-not-allowed text-[#849495] border-transparent'
+                  : layers.modernContinents
+                  ? 'bg-[#00f0ff]/15 text-[#dbfcff] border-[#00f0ff]/70 shadow-[0_0_12px_rgba(0,240,255,0.18)]'
+                  : 'text-[#b9cacb] border-[#38bdf8]/20 hover:border-[#38bdf8]/50 hover:text-[#dbe1ff]'
+              }`}
+            >
+              <span>Modern Continents</span>
+              <span
+                aria-hidden="true"
+                className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
+                  isModernEra && layers.modernContinents
+                    ? 'bg-[#00f0ff]'
+                    : 'bg-[#171e37] border border-[#38bdf8]/35'
+                }`}
+              >
+                <span
+                  className={`inline-block h-2.5 w-2.5 rounded-full transition-transform duration-150 ${
+                    isModernEra && layers.modernContinents
+                      ? 'translate-x-3.5 bg-[#030712]'
+                      : 'translate-x-0.5 bg-[#7bd0ff]'
+                  }`}
+                />
+              </span>
+              <span
+                className={`text-[10px] font-semibold ${
+                  isModernEra && layers.modernContinents ? 'text-[#00f0ff]' : 'text-[#849495]'
+                }`}
+              >
+                {isModernEra && layers.modernContinents ? 'ON' : 'OFF'}
+              </span>
+            </button>
           </div>
 
           <div className="pointer-events-auto flex items-center gap-1.5 observatory-deck rounded px-2 py-1.5">

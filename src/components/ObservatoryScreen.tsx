@@ -14,7 +14,6 @@ import { EpochScrubber } from './EpochScrubber';
 import {
   MapPin,
   X,
-  ArrowUpRight,
   Thermometer,
   Clock,
   Gauge,
@@ -44,10 +43,7 @@ interface ObservatoryScreenProps {
   earthdataToken: string;
   focusTarget: { lat: number; lon: number; nonce: number } | null;
   onFocusCoords: (lat: number, lon: number) => void;
-  onOpenSpectroscopy: () => void;
-  onOpenChronology: () => void;
-  onOpenSatelliteScreen: () => void;
-  onOpenSourcesScreen: () => void;
+  onOpenSarComparator: () => void;
 }
 
 function lerp(a: number, b: number, t: number): number {
@@ -80,10 +76,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
   earthdataToken,
   focusTarget,
   onFocusCoords,
-  onOpenSpectroscopy,
-  onOpenChronology,
-  onOpenSatelliteScreen,
-  onOpenSourcesScreen,
+  onOpenSarComparator,
 }) => {
   const [layers, setLayers] = useState<GlobeLayerState>({
     atmosphere: true,
@@ -91,6 +84,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
     tectonics: true,
     thermal: false,
     beacons: true,
+    modernContinents: false,
   });
 
   const [selectedSite, setSelectedSite] = useState<FieldSite | null>(null);
@@ -218,7 +212,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
   const currentSatEra = SATELLITE_ERAS[satEraIdx] || SATELLITE_ERAS[SATELLITE_ERAS.length - 1];
 
   return (
-    <div className="max-w-[1680px] mx-auto px-5 md:px-10 py-5 flex flex-col gap-5">
+    <div className="flex-1 w-full max-w-[1680px] mx-auto px-5 md:px-10 py-4 flex flex-col gap-4">
       {/* Observatory Mode Switch Ribbon (Distinguishes Geological Time vs Satellite Observation Time) */}
       <div className="observatory-deck rounded-lg px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-1 p-1 rounded bg-[#050b14] border border-[#38bdf8]/20">
@@ -256,7 +250,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
       </div>
 
       {/* Main 12-Column Observatory Console */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch min-h-0">
         {/* Left Column: Deep-Time Stations OR SAR Observation Layers & Sites (3 cols) */}
         <aside className="lg:col-span-3 flex flex-col gap-4">
           {!isSatelliteMode ? (
@@ -270,17 +264,12 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
                     Deep-Time Stations
                   </h2>
                 </div>
-                <button
-                  type="button"
-                  onClick={onOpenChronology}
-                  className="text-[11px] font-mono-tabular uppercase tracking-wider text-[#00f0ff] hover:underline flex items-center gap-1"
-                >
-                  <span>All Strata</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
+                <span className="font-mono-tabular text-[11px] text-[#849495]">
+                  {EARTH_EPOCHS.length} Epochs
+                </span>
               </div>
 
-              <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[540px] pr-1">
+              <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto min-h-[260px] max-h-[580px] pr-1">
                 {EARTH_EPOCHS.map((ep, idx) => {
                   const isSelected = activeGeoEpoch.id === ep.id;
                   return (
@@ -331,14 +320,6 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
                       Active SAR Overlays
                     </h2>
                   </div>
-                  <button
-                    type="button"
-                    onClick={onOpenSatelliteScreen}
-                    className="text-[11px] font-mono-tabular uppercase tracking-wider text-[#00f0ff] hover:underline flex items-center gap-1"
-                  >
-                    <span>Explorer</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
@@ -379,7 +360,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
               </div>
 
               {/* SAR Observation Sites Selector */}
-              <div className="flex flex-col gap-1.5 overflow-y-auto max-h-[380px] pr-1">
+              <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto min-h-[220px] max-h-[440px] pr-1">
                 {SAR_OBSERVATIONS.filter((s) => activeSarPhenomena[s.phenomenon]).map((site) => {
                   const isSel = selectedSarSite.id === site.id;
                   const color = SAR_PHENOMENON_COLORS[site.phenomenon];
@@ -427,7 +408,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
         {/* Center Column: Primary 3D Planetary Viewport (6 cols) */}
         <section
           aria-label="Interactive Planetary Viewport"
-          className="lg:col-span-6 observatory-deck reticle-frame cosmic-grid rounded-lg relative min-h-[460px] lg:min-h-[600px] flex flex-col overflow-hidden"
+          className="lg:col-span-6 observatory-deck reticle-frame cosmic-grid rounded-lg relative min-h-[480px] lg:min-h-[620px] flex flex-col overflow-hidden"
         >
           <div
             aria-hidden="true"
@@ -466,6 +447,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
               onScanRegion={handleScanRegion}
               isScanningRegion={isScanningRegion}
               focusTarget={focusTarget}
+              isModernEra={isSatelliteMode || activeGeoEpoch.id === 'holocene'}
             />
 
             {/* Floating Level 3 Inspect Card for Selected Geological Site */}
@@ -600,13 +582,6 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
                     <span className="font-mono-tabular text-[10px] uppercase tracking-[0.12em] text-[#7bd0ff]">
                       Atmospheric Composition
                     </span>
-                    <button
-                      type="button"
-                      onClick={onOpenSpectroscopy}
-                      className="font-mono-tabular text-[10px] uppercase tracking-wider text-[#00f0ff] hover:underline"
-                    >
-                      Full Spectrum
-                    </button>
                   </div>
 
                   <div className="flex flex-col gap-2 font-mono-tabular text-xs">
@@ -707,7 +682,7 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
             </>
           ) : (
             /* EXPANDED UPPER-RIGHT INFORMATION PANEL FOR SATELLITE OBSERVATIONS */
-            <div className="observatory-deck rounded-lg p-4 flex flex-col gap-3.5 h-full overflow-y-auto max-h-[600px]">
+            <div className="observatory-deck rounded-lg p-4 flex flex-col gap-3.5 h-full overflow-y-auto max-h-[660px]">
               <div className="flex items-start justify-between gap-2 border-b border-[#38bdf8]/15 pb-3">
                 <div>
                   <div className="font-mono-tabular text-[10px] uppercase tracking-[0.12em] text-[#00f0ff]">
@@ -789,21 +764,14 @@ export const ObservatoryScreen: React.FC<ObservatoryScreenProps> = ({
                 </div>
               )}
 
-              {/* 5. Provenance & Before/After Action */}
+              {/* 5. Provenance & Before/After Modal Action */}
               <div className="mt-auto pt-2 border-t border-[#38bdf8]/15 flex flex-col gap-2">
-                <div className="flex items-center justify-between text-[10px] font-mono-tabular text-[#849495]">
-                  <span>{selectedSarSite.dataSourceLabel}</span>
-                  <button
-                    type="button"
-                    onClick={onOpenSourcesScreen}
-                    className="text-[#7bd0ff] hover:underline"
-                  >
-                    References
-                  </button>
+                <div className="text-[10px] font-mono-tabular text-[#849495]">
+                  {selectedSarSite.dataSourceLabel}
                 </div>
                 <button
                   type="button"
-                  onClick={onOpenSatelliteScreen}
+                  onClick={onOpenSarComparator}
                   className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-mono-tabular uppercase tracking-wider bg-[#00f0ff]/15 border border-[#00f0ff] text-[#00f0ff] hover:bg-[#00f0ff] hover:text-[#030712] transition-colors"
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5" />

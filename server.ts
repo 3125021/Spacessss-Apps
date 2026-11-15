@@ -160,7 +160,7 @@ async function createApp() {
         const timeout = setTimeout(() => controller.abort(), 11000);
         const headers: Record<string, string> = {
           Accept: 'application/json',
-          'User-Agent': 'EarthThroughTime-SpaceApps/1.0',
+          'User-Agent': 'GlobalTime-SpaceApps/1.0',
         };
         if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -285,7 +285,7 @@ async function createApp() {
         const timeout = setTimeout(() => controller.abort(), 10000);
         const headers: Record<string, string> = {
           Accept: 'application/json',
-          'User-Agent': 'EarthThroughTime-SpaceApps/1.0',
+          'User-Agent': 'GlobalTime-SpaceApps/1.0',
         };
         if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -406,7 +406,7 @@ async function createApp() {
       const timeout = setTimeout(() => controller.abort(), 9000);
       const headers = {
         Accept: 'application/json',
-        'User-Agent': 'EarthThroughTime-SpaceApps/1.0',
+        'User-Agent': 'GlobalTime-SpaceApps/1.0',
       };
 
       const [nisarRes, topRes] = await Promise.all([
@@ -482,7 +482,7 @@ async function createApp() {
           signal: controller.signal,
           headers: {
             Accept: 'application/json',
-            'User-Agent': 'EarthThroughTime-SpaceApps/1.0',
+            'User-Agent': 'GlobalTime-SpaceApps/1.0',
           },
         }
       );
@@ -552,7 +552,7 @@ async function createApp() {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 12000);
       const headers: Record<string, string> = {
-        'User-Agent': 'EarthThroughTime-SpaceApps/1.0',
+        'User-Agent': 'GlobalTime-SpaceApps/1.0',
       };
       if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -653,7 +653,7 @@ async function createApp() {
   }
 
   httpServer.listen(PORT, '0.0.0.0', () => {
-    console.log(`Earth Through Time server listening on http://0.0.0.0:${PORT}`);
+    console.log(`Global Time server listening on http://0.0.0.0:${PORT}`);
   });
 }
 
