@@ -1,0 +1,6 @@
+{
+  "name": "Earth Through Time",
+  "description": "An interactive planetary observatory and deep-time exhibition tracing 4.54 billion years of Earth's geological, atmospheric, and biological evolution.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

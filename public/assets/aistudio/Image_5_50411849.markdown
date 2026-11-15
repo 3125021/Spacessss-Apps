@@ -1,0 +1,241 @@
+---
+name: Earth Through Time
+colors:
+  surface: '#0a122a'
+  surface-dim: '#0a122a'
+  surface-bright: '#313852'
+  surface-container-lowest: '#050d25'
+  surface-container-low: '#131a33'
+  surface-container: '#171e37'
+  surface-container-high: '#212942'
+  surface-container-highest: '#2c344d'
+  on-surface: '#dbe1ff'
+  on-surface-variant: '#b9cacb'
+  inverse-surface: '#dbe1ff'
+  inverse-on-surface: '#282f49'
+  outline: '#849495'
+  outline-variant: '#3b494b'
+  surface-tint: '#00dbe9'
+  primary: '#dbfcff'
+  on-primary: '#00363a'
+  primary-container: '#00f0ff'
+  on-primary-container: '#006970'
+  inverse-primary: '#006970'
+  secondary: '#7bd0ff'
+  on-secondary: '#00354a'
+  secondary-container: '#00a6e0'
+  on-secondary-container: '#00374d'
+  tertiary: '#fff3ea'
+  on-tertiary: '#472a00'
+  tertiary-container: '#ffd19c'
+  on-tertiary-container: '#855300'
+  error: '#ffb4ab'
+  on-error: '#690005'
+  error-container: '#93000a'
+  on-error-container: '#ffdad6'
+  primary-fixed: '#7df4ff'
+  primary-fixed-dim: '#00dbe9'
+  on-primary-fixed: '#002022'
+  on-primary-fixed-variant: '#004f54'
+  secondary-fixed: '#c4e7ff'
+  secondary-fixed-dim: '#7bd0ff'
+  on-secondary-fixed: '#001e2c'
+  on-secondary-fixed-variant: '#004c69'
+  tertiary-fixed: '#ffddb8'
+  tertiary-fixed-dim: '#ffb95f'
+  on-tertiary-fixed: '#2a1700'
+  on-tertiary-fixed-variant: '#653e00'
+  background: '#0a122a'
+  on-background: '#dbe1ff'
+  surface-variant: '#2c344d'
+typography:
+  display-hero:
+    fontFamily: Space Grotesk
+    fontSize: 56px
+    fontWeight: '700'
+    lineHeight: 64px
+    letterSpacing: -0.03em
+  display-hero-mobile:
+    fontFamily: Space Grotesk
+    fontSize: 36px
+    fontWeight: '700'
+    lineHeight: 44px
+    letterSpacing: -0.02em
+  headline-lg:
+    fontFamily: Space Grotesk
+    fontSize: 40px
+    fontWeight: '600'
+    lineHeight: 48px
+    letterSpacing: -0.02em
+  headline-lg-mobile:
+    fontFamily: Space Grotesk
+    fontSize: 28px
+    fontWeight: '600'
+    lineHeight: 36px
+    letterSpacing: -0.01em
+  headline-md:
+    fontFamily: Space Grotesk
+    fontSize: 28px
+    fontWeight: '500'
+    lineHeight: 36px
+    letterSpacing: -0.01em
+  headline-sm:
+    fontFamily: Space Grotesk
+    fontSize: 20px
+    fontWeight: '500'
+    lineHeight: 28px
+    letterSpacing: 0em
+  body-lg:
+    fontFamily: Inter
+    fontSize: 18px
+    fontWeight: '400'
+    lineHeight: 28px
+    letterSpacing: -0.01em
+  body-md:
+    fontFamily: Inter
+    fontSize: 15px
+    fontWeight: '400'
+    lineHeight: 24px
+    letterSpacing: 0em
+  body-sm:
+    fontFamily: Inter
+    fontSize: 13px
+    fontWeight: '400'
+    lineHeight: 20px
+    letterSpacing: 0.01em
+  telemetry-lg:
+    fontFamily: JetBrains Mono
+    fontSize: 16px
+    fontWeight: '500'
+    lineHeight: 22px
+    letterSpacing: 0.05em
+  telemetry-md:
+    fontFamily: JetBrains Mono
+    fontSize: 13px
+    fontWeight: '400'
+    lineHeight: 18px
+    letterSpacing: 0.06em
+  telemetry-sm:
+    fontFamily: JetBrains Mono
+    fontSize: 11px
+    fontWeight: '400'
+    lineHeight: 16px
+    letterSpacing: 0.08em
+  label-caps:
+    fontFamily: JetBrains Mono
+    fontSize: 10px
+    fontWeight: '600'
+    lineHeight: 14px
+    letterSpacing: 0.12em
+rounded:
+  sm: 0.125rem
+  DEFAULT: 0.25rem
+  md: 0.375rem
+  lg: 0.5rem
+  xl: 0.75rem
+  full: 9999px
+spacing:
+  gutter: 1.5rem
+  gutter-mobile: 1rem
+  margin: 3rem
+  margin-mobile: 1.25rem
+  space-xs: 0.25rem
+  space-sm: 0.5rem
+  space-md: 1rem
+  space-lg: 1.5rem
+  space-xl: 2.5rem
+  space-2xl: 4rem
+---
+
+## Brand & Style
+
+This design system embodies the precision, wonder, and institutional gravitas of a world-class planetary observatory and NASA exploratory research initiative. It bridges high-resolution planetary science with cutting-edge public museum curation. The interface must feel like an operational mission control terminal blended with an editorial digital exhibition.
+
+The design movement combines **Deep Space Glassmorphism** with **Technical High-Precision Futurism**:
+- **Tone:** Authoritative, visionary, meticulous, and awe-inspiring.
+- **Visual Weight:** Weightless, expansive cosmic depth counterbalanced by laser-sharp telemetry overlays, micro-borders, and high-density informational readouts.
+- **Lighting Model:** Dark-mode native, illuminated by synthetic telemetry beacons, bioluminescent accents, and faint atmospheric limb glows.
+
+## Colors
+
+The palette is rooted in planetary observation data, calibrated against space agency telemetry standards:
+
+- **Deep Space Foundations:** `#030712` (Cosmic Black base canvas), `#050B14` (Deep Space secondary backdrop), and `#0B132B` (Deep Void Navy container layer).
+- **Primary Energy (`#00F0FF` - Electric Cyan):** Used for primary interactive triggers, active timeline nodes, live telemetry data streams, and focused states.
+- **Secondary Atmospheric (`#38BDF8` - Bioluminescent Azure):** Used for atmospheric limb contours, glass highlight borders, structural metadata, and secondary interactive states.
+- **Tertiary Orbital (`#F59E0B` - Orbital Gold):** Used sparingly for critical mission milestones, solar events, geological epochs, and high-priority observational anomalies.
+- **Deep Space Accent (`#8B5CF6` - Deep Space Violet):** Applied as faint, ambient radial backdrops behind deep-time visualizers and spectroscopy charts.
+
+### Transparency & Glow Rules
+- Glass surfaces use `rgba(11, 19, 43, 0.65)` layered over deep space canvases.
+- Micro-borders employ `rgba(56, 189, 248, 0.2)` default, shifting to `rgba(0, 240, 255, 0.5)` on hover or focus.
+- Interactive glows must maintain a tight radius (`box-shadow: 0 0 16px rgba(0, 240, 255, 0.35)`) to avoid muddy contrast.
+
+## Typography
+
+The typographic hierarchy establishes clear operational boundaries between narrative storytelling and mission data:
+
+- **Space Grotesk (Headlines & Epoch Identifiers):** Carries structural tension and futuristic geometry. Use uppercase sparingly for major era headings, paired with generous tracking.
+- **Inter (Narrative Body & Scientific Explanations):** Ensures maximum legibility across long-form planetary histories, curatorial essays, and artifact briefs.
+- **JetBrains Mono (Telemetry, Coordinates, Data Readouts, & Timestamps):** All numerical readouts, geological ages (`e.g., 4.543 Ga ± 1%`), coordinate grids (`LAT/LONG/ALT`), sensor badges, and status codes must render strictly in this monospace family.
+
+Numeric figures in tables and real-time streams must use tabular figures (`font-variant-numeric: tabular-nums`).
+
+## Layout & Spacing
+
+The spatial architecture balances expansive cosmic voids with high-density scientific instrumentation:
+
+- **Grid Architecture:** 12-column responsive fluid grid anchored by a 1440px desktop standard and max-canvas clamp at 1800px. Content rests inside precise structural margins to evoke instrument frames.
+- **Adaptive Breakpoints:**
+  - **Desktop (1200px+):** Full 12-column layout. Timeline rails, planetary viewport, and telemetry side-drawers coexist simultaneously. Margin is `3rem` (48px); gutter is `1.5rem` (24px).
+  - **Tablet (768px – 1199px):** 8-column layout. Side telemetry panels collapse into sliding bottom sheets; hero globe view claims persistent central priority. Margin is `2rem` (32px); gutter is `1.25rem` (20px).
+  - **Mobile (< 768px):** 4-column layout. Monospace telemetry collapses to compact single-row ribbons. Margin is `1.25rem` (20px); gutter is `1rem` (16px).
+- **Rhythm:** Spacing follows strict multiples of 8px (with 4px for tight badge metadata). Use `space-2xl` between planetary stages to deliver spatial reverence, while internal card data uses tight `space-sm` and `space-md` gaps.
+
+## Elevation & Depth
+
+Visual depth is achieved through optical atmospheric layering rather than drop shadows:
+
+- **Level 0 (Cosmic Floor):** `#030712` canvas, optionally layered with subtle starlight noise (0.02 opacity) or faint orbital vector rings.
+- **Level 1 (Sub-surface Panels):** Background `#050B14` with a 1px solid border (`rgba(255, 255, 255, 0.05)`).
+- **Level 2 (Active Glassmorphic Decks):** Background `rgba(11, 19, 43, 0.55)` with `backdrop-filter: blur(16px)` and a directional 1px perimeter gradient border running from `rgba(56, 189, 248, 0.35)` (top-left) to `rgba(56, 189, 248, 0.05)` (bottom-right).
+- **Level 3 (Interactive Floating Inspect Overlays):** Background `rgba(11, 19, 43, 0.85)` with `backdrop-filter: blur(24px)`, a crisp 1px border (`rgba(0, 240, 255, 0.4)`), and an atmospheric glow: `box-shadow: 0 0 24px -4px rgba(0, 240, 255, 0.2)`.
+- **Level 4 (Critical Mission Modals & Data Beacons):** Crisp borders with double luminosity rings (`box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.6), 0 0 32px rgba(0, 240, 255, 0.25)`).
+
+## Shapes
+
+The shape system is deliberately constrained to **Soft (`roundedness: 1`)** to maintain an instrumental, laboratory equipment aesthetic:
+
+- **Base Radius (0.25rem / 4px):** Applied to telemetry badges, buttons, tooltips, slider thumbs, and monospaced code blocks.
+- **Container Radius (0.5rem / 8px):** Applied to glassmorphism cards, observation modals, timeline scrubbers, and visualizer modules.
+- **Nested Inner Geometry (0.25rem / 4px):** Retains strict concentric geometry with parent cards.
+- **Telemetry Notches & Corner Marks:** Component corners may employ 1px optical reticle brackets (`L-brackets`) at the extremities of data viewports to amplify the scientific viewfinder aesthetic.
+
+## Components
+
+### Buttons
+- **Primary Telemetry Button:** Filled with `rgba(0, 240, 255, 0.15)`, 1px border of `#00F0FF`, text in `#00F0FF` (`JetBrains Mono`, uppercase, tracked +0.08em). On hover: solid `#00F0FF` background, `#030712` text, with `box-shadow: 0 0 16px rgba(0, 240, 255, 0.4)`.
+- **Secondary Ghost Button:** Background `rgba(11, 19, 43, 0.4)`, 1px border of `rgba(56, 189, 248, 0.2)`, text in `#E2E8F0`. Hover shifts border to `rgba(56, 189, 248, 0.6)`.
+
+### Telemetry Badges & Epoch Chips
+- Compact pills or 4px-radius badges featuring a 6px pulsing status dot (`#00F0FF` for real-time/orbital, `#F59E0B` for planetary events).
+- Micro-typography rendered in `JetBrains Mono` at `label-caps` size.
+- Subtle glass fill with a 1px border colored dynamically according to telemetry tier.
+
+### Cards & Observational Modules
+- Glassmorphic panels with `backdrop-filter: blur(16px)` and perimeter glow borders.
+- Top-left card header always features a monospace category index (e.g., `SEC-04 // ATMOSPHERIC CO2`) alongside the title in `Space Grotesk`.
+- Technical corner reticles (subtle crosshairs or corner tick marks) on high-priority analytical cards.
+
+### Input Fields & Sliders
+- **Inputs:** Dark recessed base (`#050B14`), 1px border of `rgba(56, 189, 248, 0.25)`, glowing to `#00F0FF` on focus. Monospace label floating above in uppercase.
+- **Chronological Scrubber / Timeline Slider:** Thin 2px rail in `rgba(56, 189, 248, 0.2)` with glowing progress segment in `#00F0FF`. Thumb is a precision reticle target box with continuous timestamp readouts.
+
+### Checkboxes & Radios
+- Crisp square (checkbox) and diamond-oriented (radio) geometries.
+- Inactive: 1px border of `rgba(56, 189, 248, 0.3)`.
+- Active: Electric cyan glow fill with high-contrast dark cosmic glyph.
+
+### Specialized Scientific Visualizer Modules
+- **Spectrogram & Geological Stratum Gauges:** High-contrast step-ladder charts with alternating tick lines.
+- **Orbital Epoch Navigator:** Sticky chronological progress bar pinned along the display axis with interactive epoch checkpoints that expand into glass preview cards upon scrubbing.
